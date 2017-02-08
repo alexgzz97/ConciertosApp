@@ -2,5 +2,6 @@
     <string name="app_name">ConciertosApp</string>
     <string name="action_settings">Settings</string>
     <string name="action_buscar">Buscar Banda o Artista</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

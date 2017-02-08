@@ -1,8 +1,10 @@
 package com.definityfirst.jesusgonzalez.conciertosapp;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -38,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by jesus.gonzalez on 07/02/2017.
  */
@@ -66,6 +70,15 @@ public class FragmentArtista extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
+        FloatingActionButton myFab = (FloatingActionButton) getView().findViewById(R.id.myFAB);
+        myFab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Toast.makeText(getActivity(), artista.getName()+" ha sido agregado a tus artistas favoritos!", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
         artistaImage = (ImageView) getView().findViewById(R.id.imageViewArtista);
         artistaName = (TextView) getView().findViewById(R.id.nameView);
         listaeventos = (ListView) getView().findViewById(R.id.listEvents);
@@ -76,9 +89,11 @@ public class FragmentArtista extends Fragment {
                 Event selectedevent = (Event) parent.getItemAtPosition(position);
                  String VenueName = selectedevent.getVenue().getPlace();
                  Double Lat = selectedevent.getVenue().getLatitude();
-                 Double Long = selectedevent.getVenue().getLongitude();
+                 Double Lng = selectedevent.getVenue().getLongitude();
                  String Country = selectedevent.getVenue().getCountry();
                  String City = selectedevent.getVenue().getCity();
+                ((MainActivity)getActivity()).setMap(Lat,Lng,VenueName);
+
 
 
 
@@ -242,5 +257,6 @@ public class FragmentArtista extends Fragment {
         }
 
     }
+
 
 }

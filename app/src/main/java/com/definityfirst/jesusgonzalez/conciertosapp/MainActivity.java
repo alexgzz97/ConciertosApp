@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -107,6 +108,24 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void setMap(Double lat, Double lng,String title){
+        bundle = new Bundle();
+        bundle.putDouble("lat",lat);
+        bundle.putDouble("lng",lng);
+        bundle.putString("title",title);
+        Fragment fragment = new FragmentMaps();
+        fragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void setActionBarTitle(String title){
+        setActionBarTitle(title);
     }
 
 }
