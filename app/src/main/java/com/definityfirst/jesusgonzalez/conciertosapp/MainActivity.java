@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         return true;
@@ -90,11 +89,10 @@ public class MainActivity extends AppCompatActivity {
                 })
                         .setNegativeButton("Cancelar",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
-                                //do something if you need
                                 dialog.cancel();
                             }
                         });
-                alertDialog.show();  //<-- See This!
+                alertDialog.show();
 
             }
             default:
