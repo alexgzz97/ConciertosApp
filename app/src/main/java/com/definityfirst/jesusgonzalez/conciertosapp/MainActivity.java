@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import com.lapism.searchview.SearchView;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -36,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .diskCache(new UnlimitedDiskCache(getCacheDir()))
+                .diskCacheFileCount(100)
                 .build();
         ImageLoader.getInstance().init(config);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

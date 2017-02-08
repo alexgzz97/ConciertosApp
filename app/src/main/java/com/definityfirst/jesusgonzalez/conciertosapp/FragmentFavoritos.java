@@ -5,6 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
 /**
  * Created by jesus.gonzalez on 07/02/2017.
  */
@@ -22,5 +30,4 @@ public class FragmentFavoritos extends Fragment {
 
 
     }
-
 }
