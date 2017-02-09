@@ -1,17 +1,24 @@
 package com.definityfirst.jesusgonzalez.conciertosapp;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -27,7 +34,8 @@ import java.util.List;
  */
 
 public class FragmentFavoritos extends Fragment {
-
+    FavAdapter favap;
+    List<Artist> favArtist = new ArrayList<Artist>();
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
     @Override
@@ -39,32 +47,57 @@ public class FragmentFavoritos extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         setHasOptionsMenu(false);
+        favArtist=((MainActivity)getActivity()).listaArtistas(favArtist);
+        final GridView favshow = (GridView) getView().findViewById(R.id.fav_gridview);
+        favap = new FavAdapter(getActivity());
+        favshow.setAdapter(favap);
+        favshow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                    Artist artistfav=favArtist.get(position);
+                    String intentname=artistfav.getName();
+                ((MainActivity)getActivity()).FragmentoArtista(intentname);
 
-    }
 
+            }
+        });
+        favshow.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
-    public class SquareImageView extends ImageView {
-        public SquareImageView(Context context) {
-            super(context);
-        }
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           final int position, long arg3) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage("Desea eliminar este artista?")
+                        .setPositiveButton(
+                                "Si",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int which) {
+                                        ((MainActivity) getActivity()).eliminarArtista(favArtist.get(position));
+                                        favap.notifyDataSetChanged();
+                                        favArtist.clear();
+                                        favArtist=((MainActivity)getActivity()).listaArtistas(favArtist);
 
-        public SquareImageView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        public SquareImageView(Context context, AttributeSet attrs, int defStyle) {
-            super(context, attrs, defStyle);
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth()); //Snap to width
-        }
+                                    }
+                                })
+                        .setNegativeButton(
+                                "No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int which) {
+                                        dialog.cancel();
+                                    }
+                                }).show();
+                return true;
+            }
+        });
     }
 
     private final class FavAdapter extends BaseAdapter {
-        private final List<Artist> favArtist = new ArrayList<Artist>();
+
         private final LayoutInflater mInflater;
 
         public FavAdapter(Context context) {
@@ -104,7 +137,7 @@ public class FragmentFavoritos extends Fragment {
 
             Artist artist = getItem(i);
             ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.displayImage(artist.getImageUrl(), picture);
+            imageLoader.displayImage(artist.getThumbUrl(), picture);
             name.setText(artist.getName());
 
             return v;

@@ -2,6 +2,7 @@ package com.definityfirst.jesusgonzalez.conciertosapp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Interpolator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -55,10 +56,10 @@ public class FragmentArtista extends Fragment {
     String urlmbid;
     ListView listaeventos;
 
+public FragmentArtista(){
+    setRetainInstance(true);
+}
 
-
-    public FragmentArtista(){
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -67,15 +68,6 @@ public class FragmentArtista extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
-        FloatingActionButton myFab = (FloatingActionButton) getView().findViewById(R.id.myFAB);
-        myFab.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                Toast.makeText(getActivity(), artista.getName()+" ha sido agregado a tus artistas favoritos!", Toast.LENGTH_LONG).show();
-
-            }
-        });
 
         artistaImage = (ImageView) getView().findViewById(R.id.imageViewArtista);
         artistaName = (TextView) getView().findViewById(R.id.nameView);
@@ -93,8 +85,6 @@ public class FragmentArtista extends Fragment {
                 ((MainActivity)getActivity()).setMap(Lat,Lng,VenueName);
 
 
-
-
             }
         });
         String name=getArguments().getString("name");
@@ -102,6 +92,21 @@ public class FragmentArtista extends Fragment {
         new ArtistAsyncTask().execute(name);
         urlmbid="http://api.bandsintown.com/artists/"+name+"/events?format=json&api_version=2.0&app_id=ConciertosDemoApp";
         new EventAsyncTask().execute(name);
+
+
+
+        FloatingActionButton myFab = (FloatingActionButton) getView().findViewById(R.id.myFAB);
+        myFab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(((MainActivity)getActivity()).isAlreadyFavorite(artista.getName())==true){
+                    Toast.makeText(getActivity(), "Este artista ya esta en favoritos", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getActivity(), artista.getName() + " ha sido agregado a tus artistas favoritos!", Toast.LENGTH_LONG).show();
+                    ((MainActivity) getActivity()).agregarArtista(artista);
+                }
+            }
+        });
     }
 
 
@@ -151,16 +156,16 @@ public class FragmentArtista extends Fragment {
 
         @Override
         protected void onPostExecute(Artist artista) {
+            if(dialog != null && dialog.isShowing()){
+                dialog.dismiss();
+            }
             if (artista!=null){
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.displayImage(artista.getImageUrl(), artistaImage);
             artistaName.setText(artista.getName());}
             else
                 Toast.makeText(getContext(), "Artista no encontrado", Toast.LENGTH_SHORT).show();
-            if(dialog != null && dialog.isShowing()){
-                dialog.dismiss();
-            }
-            if(isCancelled()) return;
+            getActivity().getFragmentManager().popBackStackImmediate();
         }
 }
 
@@ -200,18 +205,18 @@ public class FragmentArtista extends Fragment {
 
         @Override
         protected void onPostExecute(Event[] events) {
-            if (events.length>0) {
-                List<Event> list=(Arrays.asList(events));
-                ListAdapter eventAdapter = new ListAdapter(getContext(), R.layout.item_eventos, list);
-                listaeventos.setAdapter(eventAdapter);
-                Toast.makeText(getContext(), "Hay eventos proximos de este artista", Toast.LENGTH_SHORT).show();
+            if (artista!=null) {
+                if (events.length > 0) {
+                    List<Event> list = (Arrays.asList(events));
+                    ListAdapter eventAdapter = new ListAdapter(getContext(), R.layout.item_eventos, list);
+                    listaeventos.setAdapter(eventAdapter);
+                } else
+                    Toast.makeText(getContext(), "No hay eventos proximos de este artista", Toast.LENGTH_SHORT).show();
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                if (isCancelled()) return;
             }
-            else
-                Toast.makeText(getContext(), "No hay eventos proximos de este artista", Toast.LENGTH_SHORT).show();
-            if(dialog != null && dialog.isShowing()){
-                dialog.dismiss();
-            }
-            if(isCancelled()) return;
         }
     }
 

@@ -31,6 +31,10 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     private GoogleMap googleMap;
 
+    public FragmentMaps(){
+        setRetainInstance(true);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

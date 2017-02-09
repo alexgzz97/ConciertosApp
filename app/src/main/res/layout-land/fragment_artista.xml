@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/myFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:elevation="4dp"
+        app:fabSize="mini"
+        android:layout_gravity="bottom|end"
+        app:backgroundTint="@android:color/holo_orange_light"
+        app:srcCompat="@android:drawable/star_big_off"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listEvents"
+        android:paddingLeft="300dp"
+        android:layout_alignParentTop="true" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:id="@+id/imageViewArtista"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/myFAB"
+        android:layout_marginEnd="279dp"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameView"
+        android:textSize="42sp"
+        tools:text="Nombre Placeholder"
+        android:textAlignment="center"
+        android:layout_below="@+id/nameView"
+        android:layout_toStartOf="@+id/myFAB"
+        android:layout_marginEnd="258dp"
+        android:layout_marginTop="37dp" />
+
+</RelativeLayout>

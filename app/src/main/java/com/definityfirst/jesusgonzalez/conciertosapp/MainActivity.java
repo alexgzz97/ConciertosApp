@@ -1,6 +1,8 @@
 package com.definityfirst.jesusgonzalez.conciertosapp;
 
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,8 +29,10 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    DBHandler db = new DBHandler(this);
     String bArtista;
     FragmentManager fragmentManager;
     Bundle bundle;
@@ -45,8 +49,31 @@ public class MainActivity extends AppCompatActivity {
         ImageLoader.getInstance().init(config);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setFragment(new FragmentFavoritos());
+        if (savedInstanceState == null) {
+            setFragment(new FragmentFavoritos());
+        }
+        db.getWritableDatabase();
 
+    }
+    public void agregarArtista(Artist artist){
+        db.addArtist(artist);
+    }
+    public void eliminarArtista(Artist artist){
+        db.deleteArtist(artist);
+    }
+
+    public List<Artist> listaArtistas(List<Artist> list){
+        list=db.getAllArtist();
+        return list;
+    }
+
+    public boolean isAlreadyFavorite(String name) {
+        SQLiteDatabase data = new DBHandler(this).getReadableDatabase();
+        Cursor cur = data.rawQuery("SELECT * FROM " + "artists" + " WHERE name = '" + name + "'", null);
+        boolean exist = (cur.getCount() > 0);
+        cur.close();
+        db.close();
+        return exist;
     }
 
     @Override
@@ -120,6 +147,24 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void FragmentoArtista(String name){
+    try {
+        bArtista= name;
+        Fragment fragment = new FragmentArtista();
+        bundle = new Bundle();
+        bundle.putString("name",bArtista);
+        fragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+
+
+    } catch (Exception e) {
+    }
     }
 
     public void setActionBarTitle(String title){
